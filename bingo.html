@@ -13,6 +13,19 @@
             width: 50px;
             height: 50px;
             text-align: center;
+            position: relative;
+        }
+        .circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: transparent;
+            border: 2px solid red;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
         }
     </style>
 </head>
@@ -32,14 +45,22 @@
         var numbers = generateRandomNumbers();
         var table = document.getElementById("bingoBoard");
         var cellCount = 1;
-        
+
         table.innerHTML = ""; // 清空表格
-        
+
         for (var i = 0; i < 6; i++) {
             var row = table.insertRow();
             for (var j = 0; j < 6; j++) {
                 var cell = row.insertCell();
-                cell.appendChild(document.createTextNode(numbers[cellCount - 1]));
+                var number = numbers[cellCount - 1];
+                cell.dataset.number = number;
+                cell.onclick = function() {
+                    markNumber(this);
+                };
+                cell.appendChild(document.createTextNode(number));
+                var circle = document.createElement('div');
+                circle.className = 'circle';
+                cell.appendChild(circle);
                 cellCount++;
             }
         }
@@ -58,6 +79,15 @@
             numbers[j] = temp;
         }
         return numbers;
+    }
+
+    function markNumber(cell) {
+        const circle = cell.getElementsByClassName('circle')[0];
+        if (circle.style.display === 'block') {
+            circle.style.display = 'none';
+        } else {
+            circle.style.display = 'block';
+        }
     }
 
     // 初始填充游戏盘
